@@ -2,8 +2,8 @@ var app = angular.module('myApp', ['ngCookies']);
 app.controller('myCtrl', function($scope,$http, $cookies) {
     $scope.test = "";
 	
-	$scope.api1="https://final-cboseak1.c9users.io/api/?url=";
-	$scope.api2="https://final-cboseak1.c9users.io/api/?url=";
+	$scope.api1="/api/?url=";
+	$scope.api2="/api/?url=";
 	$scope.queue = [];
     $scope.urls = [];
 	$scope.url = 'aol.com';
