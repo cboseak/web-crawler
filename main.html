@@ -2,13 +2,16 @@
 <html>
 
   <head>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+	<script src="https:	//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-cookies.js"></script>
 	<script src="scrape.js"></script>
   </head>
 
   <bod  ng-app="myApp">
     <div ng-controller="myCtrl">
-    <input ng-model="url"><button ng-click="kickoff()">start</button><button ng-click="running = false">stop</button><span ng-show="running">SCRAPING IN PROGRESS</span>
+    <input ng-model="url"/><button ng-click="kickoff()">start</button><button ng-click="running = false">stop</button>
+	<input ng-model="haltKeyword" placeholder="keyword"/>
+	<span ng-show="running">SCRAPING IN PROGRESS</span>
 	<h4 ng-show="urls.length > 0">LINKS - Click to see child links</h4>
     <div ng-repeat="url in urls">
 		<span style="font-weight: 700;cursor:pointer;" ng-click="url.show=!url.show">{{url.root}}</span>

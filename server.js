@@ -2,13 +2,15 @@ var express = require('express')
 var app = express()
 var http = require('http')
 var request = require('request');
+var path = require('path');
+
 app.all('/*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   next();
 });
 
-app.get('/', function (req, res) {
+app.get('/api', function (req, res) {
 	var url = GroomUrl(req.query["url"]);
 	if(url ==''){
 		res.send("");
@@ -32,6 +34,14 @@ app.get('/', function (req, res) {
 
 })
 
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/main.html'));
+});
+app.get('/scrape.js', function(req, res) {
+    res.sendFile(path.join(__dirname + '/scrape.js'));
+});
+
 function GroomUrl(url){
 	if(url == null){
 		return '';
@@ -41,6 +51,8 @@ function GroomUrl(url){
 	//return url;
 }
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
-})
+app.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
+
+
+});
+
