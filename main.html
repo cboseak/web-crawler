@@ -2,22 +2,38 @@
 <html>
 
   <head>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600" rel="stylesheet">
+    <style>     
+      svg text {
+        fill: #fff;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 10px;
+        font-weight: 600;
+        text-anchor: start;
+      }
+    </style>
+  
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
 	<script src="https:	//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-cookies.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="scrape.js"></script>
   </head>
 
-  <bod  ng-app="myApp">
+  <body ng-app="myApp">
     <div ng-controller="myCtrl">
-    <input ng-model="url"/><button ng-click="kickoff()">start</button><button ng-click="running = false">stop</button>
-	<input ng-model="haltKeyword" placeholder="keyword"/>
-	<span ng-show="running">SCRAPING IN PROGRESS</span>
-	<h4 ng-show="urls.length > 0">LINKS - Click to see child links</h4>
-    <div ng-repeat="url in urls">
-		<span style="font-weight: 700;cursor:pointer;" ng-click="url.show=!url.show">{{url.root}}</span>
-		<span style="font-size: small;" ng-show="url.show">{{url.links}}</span>
-	<div>
+      <input ng-model="url"/><button ng-click="kickoff()">start</button><button ng-click="running = false">stop</button>
+      <input ng-model="haltKeyword" placeholder="keyword"/>
+      <span ng-show="running">SCRAPING IN PROGRESS</span>
+      <h4 ng-show="urls.length > 0">LINKS - Click to see child links</h4>
+      <div ng-repeat="url in urls">
+          <span style="font-weight: 700;cursor:pointer;" ng-click="url.show=!url.show">{{url.root}}</span>
+          <span style="font-size: small;" ng-show="url.show">{{url.links}}</span>
+      </div>
+      <div id="d3-bar-chart">
+         <graph-directive ng-if="!running" data="urls" keyword="haltKeyword"></graph-directive>
+         <svg class="chart"></svg> 
+      </div>
     </div>
   </body>
-
 </html>
