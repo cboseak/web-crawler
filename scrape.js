@@ -201,10 +201,10 @@ app.directive('graphDirective', function($parse) {
         .attr('opacity', '1')
         .on('mouseover',function() {
             d3.select(this).style('cursor', 'pointer'); 
-            d3.select(this).transition().duration(500).attr('opacity', '0');
+            d3.select(this).transition().duration(200).attr('opacity', '0');
           })
         .on('mouseout',function() {
-          d3.select(this).transition().duration(500).attr('opacity', '1');
+          d3.select(this).transition().duration(200).attr('opacity', '1');
         })
         .on('click', function(d, i) {
           var coords = d3.mouse(this);          //get coordinates of cursor 
@@ -315,7 +315,9 @@ app.directive('graphDirective', function($parse) {
               .style('fill', function() { 
                 var color;
                 d.hasKeyword ? color = keyColor.background : color = colors[d.colorIdx].background; 
-
+                if (d.hasKeyword) {
+                  return  getColorBetween(d, keyColor.background, keyColor.gradient, line);
+                } 
                 return getColorBetween(d, colors[d.colorIdx].background, colors[d.colorIdx].gradient, line);
               });
             }
@@ -355,14 +357,12 @@ app.directive('graphDirective', function($parse) {
           var color2 = c2.substring(4, c2.length-1).split(',').map(Number);
 
           var percent = line % 20 / 20;
-          //console.log('urls: '+d.url.links.length + ' percent: '+ percent);
 
           var r3 = interpolateRGB(color1[0], color2[0], percent);
           var g3 = interpolateRGB(color1[1], color2[1], percent);
           var b3 = interpolateRGB(color1[2], color2[2], percent);
 
           var betweenColors = 'rgb(' + r3 + ',' + g3 + ',' + b3 + ')';
-          //console.log(betweenColors);
 
           return betweenColors;
         }
@@ -381,7 +381,6 @@ app.directive('graphDirective', function($parse) {
             activeChild = '';
           }    
         });
-    }                 
-  }; 
-});
-
+      }                 
+    }; 
+  });
