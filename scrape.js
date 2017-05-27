@@ -355,8 +355,8 @@ app.directive('graphDirective', function($parse) {
               .style('font-style', 'italic')
               .style('font-size', '12px')
               .style('fill', function() {
-                if (d.keyIdx != -1 && d.keyIdx == j) {
-                  return 'rgb(255, 95, 96)';    //red text for link containing keyword 
+                if (d.hasKeyword == true && d.keyIdx == -1) {	
+                  return 'rgb(255, 95, 96)';    //red text for root containing keyword 
                 }
                 if (d.hasKeyword == true || d3.hsl(d3.select('#rect-child' + i + '-' + d.row).style('fill')).l > 0.8) {
                   return 'rgb(105,105,105)';    //gray text for lighter backgrounds 
