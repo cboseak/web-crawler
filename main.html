@@ -3,14 +3,39 @@
 
   <head>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">	
+	
+	<link rel="stylesheet" href="./style.css">
     <style>     
-      svg text {
-        fill: #fff;
-        font-family: 'Open Sans', sans-serif;
-        font-size: 10px;
-        font-weight: 600;
-        text-anchor: start;
-      }
+svg text {
+	fill: #fff;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 10px;
+	font-weight: 600;
+	text-anchor: start;
+}
+
+.root-link{
+	font-weight: 700;
+	cursor:pointer;
+}	
+
+.links{
+
+
+}
+
+.panel{
+	margin-bottom: 0 !important;
+}
+
+.panel-body{
+	padding : 0!important;
+}
+
+.link-list{
+	margin-bottom: 28px;
+}
     </style>
   
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
@@ -20,16 +45,36 @@
 	<script src="scrape.js"></script>
   </head>
 
-  <body ng-app="myApp">
+  <body ng-app="myApp"  class="container">
+  <header class="panel-success"><p class="panel-heading">Pictor - Graphical Web Crawler</p>
+  </header>
+  
     <div ng-controller="myCtrl">
-      <input ng-model="url"/><button ng-click="kickoff()">start</button><button ng-click="running = false">stop</button>
-      <input ng-model="haltKeyword" placeholder="keyword"/>
-      <span ng-show="running">SCRAPING IN PROGRESS</span>
+	<form class="form-horizontal">
+	<div class="input-group">
+      <input ng-model="url" class="form-control"/>
+	 </div> 
+	 <div class="input-group">
+	  <input type="hidden" placeholder="BFS or DFS" class="form-control"/>
+	  </div>	 
+	 <div class="input-group">
+	  <input type="hidden" ng-model="limit"  placeholder="Page Limit" class="form-control"/>
+	  </div>	 	  
+	 <div class="input-group">
+	  <input ng-model="haltKeyword" placeholder="keyword" class="form-control"/>
+	  </div>
+	  <div class="btn-group" role="group">
+		<button ng-click="kickoff()" type="button" class="btn btn-default">start</button><button ng-click="running = false" type="button" class="btn btn-default">stop</button>
+	  </div>
+	  </form>
+      <p ng-show="running">SCRAPING IN PROGRESS</p>
       <h4 ng-show="urls.length > 0">LINKS - Click to see child links</h4>
-      <div ng-repeat="url in urls">
-          <span style="font-weight: 700;cursor:pointer;" ng-click="url.show=!url.show">{{url.root}}</span>
-          <span style="font-size: small;" ng-show="url.show">{{url.links}}</span>
+	  <div class="link-list">
+      <div ng-repeat="url in urls"  class="panel panel-warning">
+          <div ng-click="url.show=!url.show"  class="panel-heading root-link">{{url.root}}</div><ul>
+          <li ng-show="url.show" class="panel-body links" ng-repeat="link in url.links track by $index">{{link}}</li></ul>
       </div>
+	  </div>
       <div id="d3-bar-chart">
          <graph-directive ng-if="!running" data="urls" keyword="haltKeyword"></graph-directive>
          <svg class="chart"></svg> 
