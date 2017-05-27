@@ -290,7 +290,7 @@ app.directive('graphDirective', function($parse) {
                   line.pop();
                   tspan.text(line.join(''));
                   line = [word];  
-                  tspan = text.append('tspan').attr('id', 'line'+lineNumber).attr('x', x).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word);
+                  tspan = text.append('tspan').attr('id', 'line'+(++lineNumber)+'-'+text.attr('id')).attr('x', x).attr('y', y).attr('dy', lineNumber * lineHeight + dy + 'em').text(word);
                 }
               } else { break; } 
             }
