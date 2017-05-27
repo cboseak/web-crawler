@@ -10,6 +10,7 @@ app.controller('myCtrl', function($scope,$http, $cookies) {
 	$scope.running = false;
 	$scope.haltKeyword = undefined;
 	$scope.haltFound = 0;
+	$scope.limit = 5;
 	
 	$scope.kickoff = function(){
 		if($scope.running){return;}
@@ -57,18 +58,25 @@ app.controller('myCtrl', function($scope,$http, $cookies) {
 		
 			
 		   for(var i = 0 ; i < response.data.length;i++){
+			   
 			  $scope.queue.push(response.data[i]);
 			}
-			
+			$scope.limit--;
+	
+			if($scope.limit == 0)
+				$scope.running = false;
+
+		var found = false;
 		angular.forEach(temp.links, function(data){
 			$scope.haltFound = data.search($scope.haltKeyword);
-			if($scope.haltFound >0 ){
+			if($scope.haltFound > 0 && found == false){
 				$scope.running = false;
+				found = true;
 				console.log("I should Halt!");
-				console.log($scope.haltKeyword);
+				
 			}	
 		});		
-		$scope.urls.push(temp);
+		$scope.urls.push(temp);		
 		});
 
 	}
