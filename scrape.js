@@ -105,7 +105,7 @@ app.directive('graphDirective', function($parse) {
           {background: 'rgb(219, 119, 192)',  gradient: 'rgb(167, 115, 188)'}, 
           {background: 'rgb(237,107,144)', gradient: 'rgb(255, 95, 96)'}
           ];
-      var keyColor = {background: 'rgb(226, 226, 52)', gradient: 'rgb(239, 144, 62)'};
+      var keyColor = {background: 'rgb(226, 226, 52)', gradient: 'rgb(230, 204, 32)'};
       var numColors = colors.length;
           
       //ignore empty strings, '#'s and '/'s
@@ -356,7 +356,7 @@ app.directive('graphDirective', function($parse) {
               .style('font-size', '12px')
               .style('fill', function() {
                 if (d.hasKeyword == true && d.keyIdx == -1) {	
-                  return 'rgb(255, 95, 96)';    //red text for root containing keyword 
+                  return 'rgb(234, 42, 42)';    //red text for root containing keyword 
                 }
                 if (d.hasKeyword == true || d3.hsl(d3.select('#rect-child' + i + '-' + d.row).style('fill')).l > 0.8) {
                   return 'rgb(105,105,105)';    //gray text for lighter backgrounds 
@@ -378,7 +378,7 @@ app.directive('graphDirective', function($parse) {
                 })
                 .style('fill', function() {
                   if (d.keyIdx != -1 && d.keyIdx == j) {
-                    return 'rgb(255, 95, 96)';    //red text for link containing keyword 
+                    return 'rgb(234, 42, 42)';    //red text for link containing keyword 
                   }
                   if (d.hasKeyword == true || d3.hsl(d3.select('#rect-child' + i + '-' + d.row).style('fill')).l > 0.8) {
                     return 'rgb(105,105,105)';    //gray text for lighter backgrounds 
