@@ -273,7 +273,7 @@ app.directive('graphDirective', function($parse) {
         function wrap(text, width) {
           text.each(function() {
             var text = d3.select(this),
-              words = text.text().match(/.{1,14}/g).reverse(),  //split into 13-character chunks 
+              words = text.text().match(/.{1,14}/g).reverse(),  //split into 14-character chunks 
               word,
               line = [],
               lineNumber = 0,
@@ -283,15 +283,13 @@ app.directive('graphDirective', function($parse) {
               dy = parseFloat(text.attr('dy')),
               tspan = text.text(null).append('tspan').attr('id', 'line'+lineNumber+'-'+text.attr('id')).attr('x', x).attr('y', y).attr('dy', dy + 'em');
             while (word = words.pop()) { 
-              if (lineNumber < 2) {     //show 3 lines total 
+              if (lineNumber < 3) {     //show 3 lines total 
                 line.push(word);
                 tspan.text(line.join(''));
-                if (tspan.node().getComputedTextLength() > width) {
-                  line.pop();
-                  tspan.text(line.join(''));
-                  line = [word];  
-                  tspan = text.append('tspan').attr('id', 'line'+(++lineNumber)+'-'+text.attr('id')).attr('x', x).attr('y', y).attr('dy', lineNumber * lineHeight + dy + 'em').text(word);
-                }
+                line.pop();
+                tspan.text(line.join(''));
+                line = [word];  
+                tspan = text.append('tspan').attr('id', 'line'+(lineNumber+1)+'-'+text.attr('id')).attr('x', x).attr('y', y).attr('dy', lineNumber++ * lineHeight + dy + 'em').text(word);
               } else { break; } 
             }
           });
