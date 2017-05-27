@@ -109,7 +109,8 @@ app.directive('graphDirective', function($parse) {
       var numColors = colors.length;
           
       //ignore empty strings, '#'s and '/'s
-      var data = scope.data.filter(function(url) { return url.root.length > 1 });
+      var data = [];
+      data = data = scope.data.filter(function(url) { return url.root.length > 1 });
       var keyword = scope.keyword; 
       
       var cols = 10;
