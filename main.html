@@ -77,7 +77,7 @@ svg text {
 	  </div>
       <div id="d3-bar-chart">
          <graph-directive ng-if="!running" data="urls" keyword="haltKeyword"></graph-directive>
-         <svg class="chart"></svg> 
+         <svg class="chart" ng-hide="running"></svg> 
       </div>
     </div>
   </body>
