@@ -307,41 +307,74 @@ app.directive('graphDirective', function($parse) {
             //ignore '#'s and '/'s
             d.url.links = d.url.links.filter(function(url) { return url.length > 1 });
 
-            //rectangles behind links 
-            var line = 0;
-            for (var j = 0; j < d.url.links.length; j++) {
-               childrenDisplay.append('rect')
-              .attr('class', 'rect-child')
-              .attr('id', 'rect-child' + i + '-' + d.row)
-              .attr('x', Math.floor(coords[0]))
-              .attr('y', Math.floor(coords[1]) + line++ * 16)
-              .attr('width', barWidth+50)
-              .attr('height', 24) 
-              //.attr('stroke', '#fff')
-              .style('fill', function() { 
-                var color;
-                d.hasKeyword ? color = keyColor.background : color = colors[d.colorIdx].background; 
-                if (d.hasKeyword) {
-                  return  getColorBetween(d, keyColor.background, keyColor.gradient, line);
-                } 
-                return getColorBetween(d, colors[d.colorIdx].background, colors[d.colorIdx].gradient, line);
-              });
+            var w = barWidth + 20;
+            var h = 20;
+            var rows = 20;
+            
+            var x = coords[0];
+            var y = Math.floor(coords[1]);
+
+            //if right edge of child url list goes past right edge of graph by > 200px,
+            if (x + (w * (Math.ceil((d.url.links.length+1)/20))) > d3.select('.chart').attr('width') - 200) {
+              //shift top left corner to show as much of the child list as possible 
+              x - (w * (Math.ceil((d.url.links.length+1)/20))) >= 0 ? x -= (w * (Math.ceil((d.url.links.length+1)/20))) : x = 5;
             }
 
-            //text w/ links 
-            line = 0; 
-            for (var j = 0; j < d.url.links.length; j++) {
+            //rectangles behind links 
+            for (var j = 0; j < d.url.links.length+1; j++) {
+              childrenDisplay.append('rect')
+                .attr('class', 'rect-child')
+                .attr('id', 'rect-child' + i + '-' + d.row)
+                .attr('x', Math.floor(x) + (Math.floor(j/rows)*w)) 
+                .attr('y', y + (j % rows * h))
+                .attr('width', w-5)
+                .attr('height', h) 
+                .style('fill', function() { 
+                  var color;
+                  d.hasKeyword ? color = keyColor.background : color = colors[d.colorIdx].background; 
+                  if (d.hasKeyword) {
+                    return  getColorBetween(d, keyColor.background, keyColor.gradient, j % rows);
+                  } 
+                  return getColorBetween(d, colors[d.colorIdx].background, colors[d.colorIdx].gradient, j % rows);
+                });
+            }
+
+            //text w/ links, include root URL 1st 
+            childrenDisplay.append('a').attr('class', 'child').attr('href', 'http://' + d.url.root ).attr('target', '_blank')
+              .append('text')
+              .attr('class', 'child-text' + i + '-' + d.row)
+              .attr('x', x)
+              .attr('y', y + 2)
+              .attr('dy', '.75em')
+              .text(function() {
+                if (d.url.root.length > 20)
+                  return d.url.root.substring(0,20) + '...';
+                else 
+                  return d.url.root;
+              })
+              .style('font-style', 'italic')
+              .style('font-size', '12px')
+              .style('fill', function() {
+                if (d.keyIdx != -1 && d.keyIdx == j) {
+                  return 'rgb(255, 95, 96)';    //red text for link containing keyword 
+                }
+                if (d.hasKeyword == true || d3.hsl(d3.select('#rect-child' + i + '-' + d.row).style('fill')).l > 0.8) {
+                  return 'rgb(105,105,105)';    //gray text for lighter backgrounds 
+                }
+              })
+
+            for (var j = 1; j < d.url.links.length+1; j++) {
               childrenDisplay.append('a').attr('class', 'child').attr('href', 'http://' + d.url.links[j] ).attr('target', '_blank')
                 .append('text')
                 .attr('class', 'child-text' + i + '-' + d.row)
-                .attr('x', coords[0])
-                .attr('y', coords[1] + line++ * 16 + 2) 
+                .attr('x', x + (Math.floor(j/rows)*w))
+                .attr('y', y + (j % rows * h) + 2)
                 .attr('dy', '.75em')
                 .text(function() {
-                  if (d.url.links[j].length > 20)
-                    return d.url.links[j].substring(0,20) + '...';
+                  if (d.url.links[j-1].length > 20)
+                    return d.url.links[j-1].substring(0,20) + '...';
                   else 
-                    return d.url.links[j];
+                    return d.url.links[j-1];
                 })
                 .style('fill', function() {
                   if (d.keyIdx != -1 && d.keyIdx == j) {
@@ -350,9 +383,9 @@ app.directive('graphDirective', function($parse) {
                   if (d.hasKeyword == true || d3.hsl(d3.select('#rect-child' + i + '-' + d.row).style('fill')).l > 0.8) {
                     return 'rgb(105,105,105)';    //gray text for lighter backgrounds 
                   }
-                })
-                    
+                })    
             }
+            
             d.visited = true;
             activeChild = '#g-child' + i + '-' + d.row;
           } 
