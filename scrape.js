@@ -1,5 +1,5 @@
 var app = angular.module('myApp', ['ngCookies']);
-app.controller('myCtrl', function($scope,$http, $cookies) {
+app.controller('myCtrl', function($scope, $http, $window) {
     $scope.test = "";
 	
 	$scope.api1="/api/?url=";
@@ -29,56 +29,91 @@ app.controller('myCtrl', function($scope,$http, $cookies) {
 	}
 	
 	$scope.getCookie = function(currUrl){
-		return $cookies.get(currUrl);
+		return $window.localStorage.getItem(currUrl);
 		
 	}
 	
 	$scope.createCookie = function(currUrl, links){
 		
-		var now = new Date(),
+		/*var now = new Date(),
 		// this will set the expiration to 12 months
 		exp = new Date(now.getFullYear()+1, now.getMonth(), now.getDate());
 			$cookies.put('currUrl', links,{
 			expires: exp
-			});
+			});*/
 		
+		$window.localStorage.setItem(currUrl, links);
+			console.log($window.localStorage.getItem(currUrl));
 	}
 	
 	
 		
-    $scope.getHtml = function(currUrl){		
-		  $http.get($scope.api2+currUrl)
-		.then(function(response) {
-			if(!$scope.running || response.data.length <= 1){return;}
+    $scope.getHtml = function(currUrl){	
+		var urlCookie = $scope.getCookie(currUrl);
+		if(urlCookie != undefined){
+			console.log(urlCookie);
 			var temp = {};
 			temp.root = currUrl;
-			temp.links = response.data;
+			temp.links = urlCookie;
 			temp.show = false;
-			$scope.createCookie(currUrl, temp.links);
-		
 			
-		   for(var i = 0 ; i < response.data.length;i++){
-			   
-			  $scope.queue.push(response.data[i]);
-			}
-			$scope.limit--;
-	
-			if($scope.limit == 0)
-				$scope.running = false;
+			for(var i = 0 ; i < urlCookie.length;i++){
+				   
+				  $scope.queue.push(urlCookie[i]);
+				}
+				$scope.limit--;
+		
+				if($scope.limit == 0)
+					$scope.running = false;
 
-		var found = false;
-		angular.forEach(temp.links, function(data){
-			$scope.haltFound = data.search($scope.haltKeyword);
-			if($scope.haltFound > 0 && found == false){
-				$scope.running = false;
-				found = true;
-				console.log("I should Halt!");
+			var found = false;
+			angular.forEach(temp.links, function(data){
+				$scope.haltFound = data.search($scope.haltKeyword);
+				if($scope.haltFound > 0 && found == false){
+					$scope.running = false;
+					found = true;
+					console.log("I should Halt!");
+					
+				}	
+			});		
+			$scope.urls.push(temp);		
+
+			
+		}
+		else{
+			 $http.get($scope.api2+currUrl)
+			.then(function(response) {
+				if(!$scope.running || response.data.length <= 1){return;}
+				var temp = {};
+				temp.root = currUrl;
+				temp.links = response.data;
+				temp.show = false;
+				$scope.createCookie(currUrl, temp.links);
+			
 				
-			}	
-		});		
-		$scope.urls.push(temp);		
-		});
+			   for(var i = 0 ; i < response.data.length;i++){
+				   
+				  $scope.queue.push(response.data[i]);
+				}
+				$scope.limit--;
+		
+				if($scope.limit == 0)
+					$scope.running = false;
 
+			var found = false;
+			angular.forEach(temp.links, function(data){
+				$scope.haltFound = data.search($scope.haltKeyword);
+				if($scope.haltFound > 0 && found == false){
+					$scope.running = false;
+					found = true;
+					console.log("I should Halt!");
+					
+				}	
+			});		
+			$scope.urls.push(temp);		
+			});
+
+		}
 	}
     
 });
