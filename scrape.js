@@ -15,6 +15,10 @@ app.controller('myCtrl', function($scope, $http, $window) {
 	$scope.kickoff = function(){
 		if($scope.running){return;}
 		$scope.running = true;
+				if($scope.limit <= 0){
+			$scope.running = false;
+		}
+
 		$scope.urls = [];
 		$scope.queue = [];
 		$scope.queue.push($scope.url);
@@ -50,37 +54,8 @@ app.controller('myCtrl', function($scope, $http, $window) {
 		
     $scope.getHtml = function(currUrl){	
 		var urlCookie = $scope.getCookie(currUrl);
-		if(urlCookie != undefined){
-			console.log(urlCookie);
-			var temp = {};
-			temp.root = currUrl;
-			temp.links = urlCookie;
-			temp.show = false;
 			
-			for(var i = 0 ; i < urlCookie.length;i++){
-				   
-				  $scope.queue.push(urlCookie[i]);
-				}
-				$scope.limit--;
-		
-				if($scope.limit == 0)
-					$scope.running = false;
 
-			var found = false;
-			angular.forEach(temp.links, function(data){
-				$scope.haltFound = data.search($scope.haltKeyword);
-				if($scope.haltFound > 0 && found == false){
-					$scope.running = false;
-					found = true;
-					console.log("I should Halt!");
-					
-				}	
-			});		
-			$scope.urls.push(temp);		
-
-			
-		}
-		else{
 			 $http.get($scope.api2+currUrl)
 			.then(function(response) {
 				if(!$scope.running || response.data.length <= 1){return;}
@@ -114,7 +89,7 @@ app.controller('myCtrl', function($scope, $http, $window) {
 			});
 
 		}
-	}
+	
     
 });
 
