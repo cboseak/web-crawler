@@ -6,11 +6,11 @@ app.controller('myCtrl', function($scope, $http, $window) {
 	$scope.api2="/api/?url=";
 	$scope.queue = [];
     $scope.urls = [];
-	$scope.url = 'aol.com';
+	$scope.url = 'google.com';
 	$scope.running = false;
 	$scope.haltKeyword = undefined;
 	$scope.haltFound = 0;
-	$scope.limit = 5;
+	$scope.limit = 3;
 	
 	$scope.kickoff = function(){
 		if($scope.running){return;}
@@ -33,63 +33,78 @@ app.controller('myCtrl', function($scope, $http, $window) {
 	}
 	
 	$scope.getCookie = function(currUrl){
-		return $window.localStorage.getItem(currUrl);
+		return JSON.parse(localStorage.getItem(currUrl) || null);
 		
 	}
 	
 	$scope.createCookie = function(currUrl, links){
-		
-		/*var now = new Date(),
-		// this will set the expiration to 12 months
-		exp = new Date(now.getFullYear()+1, now.getMonth(), now.getDate());
-			$cookies.put('currUrl', links,{
-			expires: exp
-			});*/
-		
-		$window.localStorage.setItem(currUrl, links);
-			console.log($window.localStorage.getItem(currUrl));
+				
+		localStorage.setItem(currUrl, JSON.stringify(links));
+
 	}
 	
 	
 		
     $scope.getHtml = function(currUrl){	
-		var urlCookie = $scope.getCookie(currUrl);
+		var urlCookie = null;
 			
-
-			 $http.get($scope.api2+currUrl)
-			.then(function(response) {
-				if(!$scope.running || response.data.length <= 1){return;}
-				var temp = {};
-				temp.root = currUrl;
-				temp.links = response.data;
-				temp.show = false;
-				$scope.createCookie(currUrl, temp.links);
-			
-				
-			   for(var i = 0 ; i < response.data.length;i++){
-				   
-				  $scope.queue.push(response.data[i]);
-				}
-				$scope.limit--;
-		
-				if($scope.limit == 0)
-					$scope.running = false;
-
-			var found = false;
-			angular.forEach(temp.links, function(data){
-				$scope.haltFound = data.search($scope.haltKeyword);
-				if($scope.haltFound > 0 && found == false){
-					$scope.running = false;
-					found = true;
-					console.log("I should Halt!");
-					
-				}	
-			});		
-			$scope.urls.push(temp);		
-			});
-
+		if(urlCookie){
+			$scope.doStuff(currUrl, urlCookie);
 		}
-	
+		else{
+			$http.get($scope.api2+currUrl)
+			.then(function(response) {
+				$scope.doStuff(currUrl, response.data);
+			});		
+		}
+		
+
+	}
+		
+	$scope.doStuff = function(currUrl, data){
+			if(!$scope.running || data.length <= 1){return;}
+			var temp = {};
+			temp.root = currUrl;
+			temp.links = [];
+			temp.show = false;
+			var find = false;
+			var isFound = false;
+			
+			if($scope.haltKeyword != null){
+				console.log("i am here");
+				find = true;
+
+			}
+			
+
+			
+			$scope.createCookie(currUrl, data);
+			console.log(data);		
+			
+		   for(var i = 0 ; i < data.length;i++){	
+				$scope.queue.push(data[i]);
+			
+				if(find){		
+					console.log("I am not found");
+					temp.links[i] = data[i];
+					$scope.haltFound = data[i].search($scope.haltKeyword);
+						if($scope.haltFound > 0){
+							console.log("I should Halt!");
+							isFound = true;
+							break;
+					  }
+				  }
+			  
+			  
+			}
+			$scope.limit--;
+
+			if($scope.limit == 0 || isFound)
+				$scope.running = false;
+
+		$scope.urls.push(temp);
+	}
+
     
 });
 
