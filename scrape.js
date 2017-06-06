@@ -76,9 +76,6 @@ app.controller('myCtrl', function($scope, $http, $window) {
 			}
 			$scope.limit--;
 
-			if($scope.limit == 0)
-				$scope.running = false;
-
 		if($scope.haltKeyword != null){	
 			var found = false;
 			var counter = 0;
@@ -88,15 +85,21 @@ app.controller('myCtrl', function($scope, $http, $window) {
 					counter++;
 					$scope.haltFound = links.search($scope.haltKeyword);
 					if($scope.haltFound > 0 && found == false){
-						$scope.running = false;
 						found = true;
 						console.log("I should Halt!");
 					}	
 						
 				}	
 				});
-		}			
-		$scope.urls.push(temp);			
+		}
+		else{
+			temp.links = data;
+		}	
+		
+		if($scope.limit == 0 || found)
+		$scope.running = false;
+	
+	$scope.urls.push(temp);			
 }
 
 		
