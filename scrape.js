@@ -46,7 +46,7 @@ app.controller('myCtrl', function($scope, $http, $window) {
 	
 		
     $scope.getHtml = function(currUrl){	
-		var urlCookie = $scope.getCookie(currUrl);
+		var urlCookie = null;
 		
 		if(urlCookie){
 			$scope.doStuff(currUrl, urlCookie);
@@ -62,35 +62,41 @@ app.controller('myCtrl', function($scope, $http, $window) {
 	
 	$scope.doStuff = function(currUrl, data){
 
-				if(!$scope.running || data.length <= 1){return;}
-				var temp = {};
-				temp.root = currUrl;
-				temp.links = data;
-				temp.show = false;
-				$scope.createCookie(currUrl, temp.links);
+		if(!$scope.running || data.length <= 1){return;}
+			var temp = {};
+			temp.root = currUrl;
+			temp.links = [];
+			temp.show = false;
+			$scope.createCookie(currUrl, temp.links);
+		
 			
-				
-			   for(var i = 0 ; i < data.length;i++){
-				   
-				  $scope.queue.push(data[i]);
-				}
-				$scope.limit--;
-		
-				if($scope.limit == 0)
-					$scope.running = false;
+		   for(var i = 0 ; i < data.length;i++){
+			   
+			  $scope.queue.push(data[i]);
+			}
+			$scope.limit--;
 
+			if($scope.limit == 0)
+				$scope.running = false;
+
+		if($scope.haltKeyword != null){	
 			var found = false;
-			angular.forEach(temp.links, function(data){
-				$scope.haltFound = data.search($scope.haltKeyword);
-				if($scope.haltFound > 0 && found == false){
-					$scope.running = false;
-					found = true;
-					console.log("I should Halt!");
-					
+			var counter = 0;
+			angular.forEach(data, function(links){
+				if(!found){
+					temp.links[counter] = links;
+					counter++;
+					$scope.haltFound = links.search($scope.haltKeyword);
+					if($scope.haltFound > 0 && found == false){
+						$scope.running = false;
+						found = true;
+						console.log("I should Halt!");
+					}	
+						
 				}	
-				});	
-			$scope.urls.push(temp);		
-		
+				});
+		}			
+		$scope.urls.push(temp);			
 }
 
 		
