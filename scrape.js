@@ -46,7 +46,7 @@ app.controller('myCtrl', function($scope, $http, $window) {
 	
 		
     $scope.getHtml = function(currUrl){	
-		var urlCookie = $scope.getCookie(currUrl);
+		var urlCookie = null;
 		
 		if(urlCookie){
 			$scope.doStuff(currUrl, urlCookie);
