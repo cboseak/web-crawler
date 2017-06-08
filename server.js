@@ -15,10 +15,8 @@ app.get('/api', function (req, res) {
 	if(url ==''){
 		res.send("");
 		return; 
-	}
-	
-	console.log(url);
-	
+	}	
+	console.log(url);	
 	request(url, function (error, response, body) {
 		if(body){
 			var ret = " " + body.toString().match(/href=(["'])(.*?)\1/g);
@@ -28,10 +26,6 @@ app.get('/api', function (req, res) {
 			}
 		res.send(retArr);}
 	});
-	
-
-
-
 })
 
 
