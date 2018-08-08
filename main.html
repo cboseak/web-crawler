@@ -19,24 +19,19 @@ svg text {
 	font-size: 11px; 
 }
 
+
 .root-link{
 	font-weight: 700;
 	cursor:pointer;
 }	
-
 .links{
-
-
 }
-
 .panel{
 	margin-bottom: 0 !important;
 }
-
 .panel-body{
 	padding : 0!important;
 }
-
 .link-list{
 	margin-bottom: 28px;
 }
@@ -72,13 +67,7 @@ svg text {
 	  </div>
 	  </form>
       <p ng-show="running">SCRAPING IN PROGRESS</p>
-      <h4 ng-show="urls.length > 0">LINKS - Click to see child links</h4>
-	  <div class="link-list">
-      <div ng-repeat="url in urls"  class="panel panel-warning">
-          <div ng-click="url.show=!url.show"  class="panel-heading root-link">{{url.root}}</div><ul>
-          <li ng-show="url.show" class="panel-body links" ng-repeat="link in url.links track by $index">{{link}}</li></ul>
-      </div>
-	  </div>
+
       <div id="d3-bar-chart">
          <graph-directive ng-if="!running" data="urls" keyword="haltKeyword"></graph-directive>
          <svg class="chart" ng-hide="running"></svg> 
